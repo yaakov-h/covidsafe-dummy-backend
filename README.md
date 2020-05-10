@@ -45,8 +45,12 @@ This is a stateless application, it does not store any of the information you se
 ### Registration
 To register, any phone number is valid. The one-time password that would normally be sent to you by SMS is simply the last 6 digits of the phone number.
 
-### TempIDs
+I highly recommended to enter some useless number, not your phone number.
 
+### Authentication
+The JWTs generated have absolutely no cryptographic signature or encryption. Do not rely on this code for anything else.
+
+### TempIDs
 Like the production app, TempIDs have a refresh time of one hour and an expiry time of two hours.
 
 These are generated based on a SHA-256 hash of the phone number + system time (to the millisecond).
