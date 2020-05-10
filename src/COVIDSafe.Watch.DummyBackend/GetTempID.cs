@@ -6,18 +6,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace COVIDSafe.Watch.DummyBackend
 {
-    public static class GetTempID
+    public class GetTempID
     {
+        public GetTempID(ISystemClock systemClock)
+        {
+            this.systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
+        }
+
+        readonly ISystemClock systemClock;
+
         [FunctionName("getTempId")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "dummy/getTempId")] HttpRequest request)
+        public IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "dummy/getTempId")] HttpRequest request)
         {
             var subject = request.GetJwtSubject();
-            var time = request.HttpContext.RequestServices.GetRequiredService<ISystemClock>().UtcNow;
+            var time = systemClock.UtcNow;
 
             var input = Encoding.UTF8.GetBytes(subject + "@" + time.ToString("yyyyMMddHHmmssfff"));
             using var algorithm = SHA256.Create();

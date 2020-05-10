@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Moq;
 using NUnit.Framework;
@@ -80,12 +79,9 @@ namespace COVIDSafe.Watch.DummyBackend.Tests
             mockSystemClock.Setup(x => x.UtcNow).Returns(time);
 
             var context = new DefaultHttpContext();
-            context.RequestServices = new ServiceCollection()
-                .AddSingleton(mockSystemClock.Object)
-                .BuildServiceProvider();
-
             context.Request.Headers[HeaderNames.Authorization] = "Bearer " + token;
-            var actionResult = GetTempID.Run(context.Request);
+
+            var actionResult = new GetTempID(mockSystemClock.Object).Run(context.Request);
             Assert.That(actionResult, Is.TypeOf<JsonResult>());
 
             var jsonResult = (JsonResult)actionResult;
