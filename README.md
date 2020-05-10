@@ -3,7 +3,11 @@
 This is a dummy backend for the COVIDSafe mobile app, for those who want to experiment with it virtually as-is,
 but without sending any data back to the Digital Transformation Agency, Department of Health, etc.
 
-## Configuration (Android)
+This is written as an Azure Functions app (its like Lambda, but Microsoft) and requires the Azure Functions SDK to run on your own computer.
+
+## Configuration
+
+### Android
 
 1. In `gradle.properties`, set the following:
 
@@ -31,7 +35,7 @@ PRODUCTION_END_POINT_PREFIX="/dummy"
 
 Note that this does not change the local behaviour, so if you build for the `release` configuration, it will still exchange local beacons with production-COVIDSafe users via Bluetooth. To avoid this, use the `debug` or `staging` build configurations, or change the GATT service UUID.
 
-## Configuration (iOS)
+### iOS
 
 TODO: Write this section.
 
