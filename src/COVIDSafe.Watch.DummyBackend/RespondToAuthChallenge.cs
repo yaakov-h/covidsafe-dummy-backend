@@ -23,7 +23,7 @@ namespace COVIDSafe.Watch.DummyBackend
             {
                 var response = new ResponseObject
                 {
-                    Token = "TODO"
+                    Token = JsonExtensions.CreateWebToken(originalPhoneNumber),
                 };
                 return new JsonResult(response);
             }
