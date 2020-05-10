@@ -12,7 +12,7 @@ namespace COVIDSafe.Watch.DummyBackend
     public static class RespondToAuthChallenge
     {
         [FunctionName("respondToAuthChallenge")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest request)
+        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "dummy/respondToAuthChallenge")] HttpRequest request)
         {
             var requestObject = request.ReadAsJson<RequestObject>();
 

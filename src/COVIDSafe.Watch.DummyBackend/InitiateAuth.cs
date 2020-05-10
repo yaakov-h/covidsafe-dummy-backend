@@ -12,7 +12,7 @@ namespace COVIDSafe.Watch.DummyBackend
     public static class InitiateAuth
     {
         [FunctionName("initiateAuth")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest request)
+        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "dummy/initiateAuth")] HttpRequest request)
         {
             var requestObject = request.ReadAsJson<RequestObject>();
             var sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(requestObject.PhoneNumber));
