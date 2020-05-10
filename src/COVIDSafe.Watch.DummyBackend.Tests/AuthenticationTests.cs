@@ -14,8 +14,14 @@ namespace COVIDSafe.Watch.DummyBackend.Tests
             var initResponse = RunInitiateAuth(@"{""age"":""123"",""device_id"":""MyFunkyDevice"",""name"":""firstname surname"",""phone_number"":""401234567"",""postcode"":""2000""}");
             Assert.That(initResponse.ChallengeName, Is.EqualTo("OTP"));
 
-            var respResponse = RunRespondToAuthChallenge($@"{{""code"":""234567"",""session"":""{initResponse.Session}""}}");
-            Assert.That(respResponse.Token, Is.Not.Null.Or.Empty);
+            var respActionResult = RunRespondToAuthChallenge($@"{{""code"":""234567"",""session"":""{initResponse.Session}""}}");
+            Assert.That(respActionResult, Is.TypeOf<JsonResult>());
+
+            var jsonResult = (JsonResult)respActionResult;
+            Assert.That(jsonResult.Value, Is.TypeOf<RespondToAuthChallenge.ResponseObject>());
+
+            var response = (RespondToAuthChallenge.ResponseObject)jsonResult.Value;
+            Assert.That(response.Token, Is.Not.Null.Or.Empty);
         }
 
         [Test]
@@ -24,8 +30,11 @@ namespace COVIDSafe.Watch.DummyBackend.Tests
             var initResponse = RunInitiateAuth(@"{""age"":""123"",""device_id"":""MyFunkyDevice"",""name"":""firstname surname"",""phone_number"":""401234567"",""postcode"":""2000""}");
             Assert.That(initResponse.ChallengeName, Is.EqualTo("OTP"));
 
-            var respResponse = RunRespondToAuthChallenge($@"{{""code"":""000000"",""session"":""{initResponse.Session}""}}");
-            Assert.That(respResponse.Token, Is.Not.Null.Or.Empty);
+            var respActionResult = RunRespondToAuthChallenge($@"{{""code"":""000000"",""session"":""{initResponse.Session}""}}");
+            Assert.That(respActionResult, Is.TypeOf<StatusCodeResult>());
+
+            var statusCodeResult = (StatusCodeResult)respActionResult;
+            Assert.That(statusCodeResult.StatusCode, Is.GreaterThan(400).And.LessThan(599));
         }
 
         static InitiateAuth.ResponseObject RunInitiateAuth(string requestBody)
@@ -42,16 +51,12 @@ namespace COVIDSafe.Watch.DummyBackend.Tests
             return (InitiateAuth.ResponseObject)jsonResult.Value;
         }
 
-        static RespondToAuthChallenge.ResponseObject RunRespondToAuthChallenge(string requestBody)
+        static IActionResult RunRespondToAuthChallenge(string requestBody)
         {
             var context = new DefaultHttpContext();
             context.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes(requestBody));
             var actionResult = RespondToAuthChallenge.Run(context.Request);
-
-            var jsonResult = (JsonResult)actionResult;
-            Assert.That(jsonResult.Value, Is.TypeOf<RespondToAuthChallenge.ResponseObject>());
-
-            return (RespondToAuthChallenge.ResponseObject)jsonResult.Value;
+            return actionResult;
         }
     }
 }

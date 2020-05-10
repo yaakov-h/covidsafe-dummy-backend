@@ -17,9 +17,9 @@ namespace COVIDSafe.Watch.DummyBackend
             var requestObject = request.ReadAsJson<RequestObject>();
 
             var originalPhoneNumber = Encoding.UTF8.GetString(Convert.FromBase64String(requestObject.Session));
-            var expectedCode = originalPhoneNumber;
+            var expectedCode = originalPhoneNumber[^6..];
 
-            if (expectedCode == originalPhoneNumber)
+            if (expectedCode == requestObject.Code)
             {
                 var response = new ResponseObject
                 {
